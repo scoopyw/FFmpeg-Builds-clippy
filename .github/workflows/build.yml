@@ -18,6 +18,10 @@ on:
         default: false
         required: false
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   DOCKER_BUILDKIT: 1
 
