@@ -1,5 +1,6 @@
 #!/bin/bash
 set -xe
+shopt -s nullglob
 cd "$(dirname "$0")"
 source util/vars.sh dl only
 
