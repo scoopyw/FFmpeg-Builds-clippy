@@ -51,6 +51,17 @@ SLIM_CONFIG=(
     --disable-debug
 
     # Hardware encoders (all MIT-licensed integration, LGPL-safe).
+    #
+    # `--enable-nvenc` is separate from `--enable-ffnvcodec` and is NOT
+    # optional. ffnvcodec supplies the headers; `nvenc` is its own entry in
+    # ffmpeg's hwaccel autodetect list, and `--disable-autodetect` above
+    # switches that off. Without it configure quietly emits
+    #   WARNING: Disabled h264_nvenc_encoder because not all dependencies
+    #            are satisfied: nvenc
+    # and builds fine -- you get a working binary that silently has no
+    # NVIDIA encoder, so every NVIDIA user's trim/export falls through to
+    # the software rung. Found exactly that way on the first green compile.
+    --enable-nvenc
     --enable-ffnvcodec
     --enable-amf
     --enable-libvpl
@@ -65,7 +76,12 @@ SLIM_CONFIG=(
     --enable-encoder=h264_nvenc,h264_amf,h264_qsv,libopenh264,aac,mjpeg
     --enable-parser=h264,aac
     --enable-bsf=h264_mp4toannexb,aac_adtstoasc,extract_extradata
-    --enable-filter=aresample,volume,asplit,amix,alimiter,scale,format,aformat,anull,null
+    # `overlay` is for the input-overlay burn-in on export: the rendered
+    # key/mouse overlay is fed in as raw BGRA (hence the `rawvideo` demuxer
+    # and `pipe` protocol above) and composited over the clip. Without it
+    # export fails at runtime with "No such filter", the same silent-break
+    # shape as a missing bitstream filter.
+    --enable-filter=aresample,volume,asplit,amix,alimiter,scale,format,aformat,anull,null,overlay
 
     # mov demuxer can meet zlib-compressed atoms in the wild.
     --enable-zlib

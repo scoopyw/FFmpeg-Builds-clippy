@@ -19,7 +19,6 @@ ffbuild_depends() {
     # entire point of the exercise.
     #
     # Keep only what Clippy's invocation sites actually need.
-    echo libiconv       # common mingw dependency of the base toolchain
     echo zlib           # --enable-zlib; mov demuxer meets compressed atoms
     echo ffnvcodec      # h264_nvenc  (NVIDIA)
     echo amf            # h264_amf    (AMD)
